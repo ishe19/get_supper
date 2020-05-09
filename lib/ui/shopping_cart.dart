@@ -198,7 +198,7 @@ class _CartState extends State<Cart> {
                       future: DBManagerViews.getList(),
                       builder: (context, snapshot){
                         if(snapshot.connectionState == ConnectionState.done){
-                          final cart = snapshot.data;
+                          var cart = snapshot.data;
                           return ListView.builder(
                             itemCount: cart == null ? Column(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -231,7 +231,9 @@ class _CartState extends State<Cart> {
             child: IconButton(
               icon: Icon(Icons.close),
               onPressed: (){
-                
+                setState(() {
+                  cart = 0;
+                });
               },
             ),
           ),
