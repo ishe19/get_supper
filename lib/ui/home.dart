@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:get_supper/model/db_manager.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
 import 'package:get_supper/ui/utils/uidata.dart';
+import 'shopping_cart.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -8,6 +12,13 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home>{
+
+
+  @override
+  void initState(){
+    super.initState();
+    DBManagerViews.openDB();
+  }
 
   var product_list = [
     {
@@ -104,7 +115,9 @@ _buildButton(String title, int index) {
           IconButton(
             icon: Icon(Icons.shopping_cart),
             color: Uidata.primaryColor,
-            onPressed: (){},
+            onPressed: (){
+              Navigator.push(context, MaterialPageRoute(builder: (context)=> Cart()));
+            },
           )
         ],
         ),
@@ -157,6 +170,23 @@ _buildButton(String title, int index) {
           )),
       );
   }
+
+  showSnack(String title, BuildContext context){
+    return Scaffold.of(context).showSnackBar(
+      SnackBar(
+                                  backgroundColor: Uidata.primaryColor,
+                                elevation: 2.0,
+                                content: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                  children: <Widget>[
+                                    Icon(Icons.add_shopping_cart),
+                                    Text("$title added to cart"),
+                                  ],
+                                ),
+                                // duration: Duration(seconds: 3),
+                                )
+                              );
+                        }
 
   Widget foodCard(String img, String title, int price, BuildContext context) {
     var rating;
@@ -227,20 +257,12 @@ _buildButton(String title, int index) {
                             iconSize: 20,
                             color: Colors.white,
                             onPressed: () {
-                              Scaffold.of(context).showSnackBar(
-                                SnackBar(
-                                  backgroundColor: Uidata.primaryColor,
-                                elevation: 2.0,
-                                content: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                  children: <Widget>[
-                                    Icon(Icons.add_shopping_cart),
-                                    Text("$title added to cart"),
-                                  ],
-                                ),
-                                // duration: Duration(seconds: 3),
-                                )
-                              );
+                              DBManagerViews.insertOrder({
+                                "title": title,
+                                "price": price.toString(),
+                                "img": img
+                              });
+                              showSnack(title, context);
                             },
                           ),
                         ),
@@ -269,6 +291,10 @@ _buildButton(String title, int index) {
         ),
       ),
     );
+
+
+
+
   }
 
 
