@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get_supper/model/db_manager.dart';
 import 'package:get_supper/ui/utils/uidata.dart';
+import 'package:ussd/ussd.dart';
 
 class Cart extends StatefulWidget {
   
@@ -13,6 +14,12 @@ class Cart extends StatefulWidget {
 
 class _CartState extends State<Cart> {
 
+int total;
+int count = 0;
+
+Future<void> launchUssd(String ussdCode) async {
+    Ussd.runUssd(ussdCode);
+  }
 
   String getDate(int day, int month){
     String todayDate;
@@ -152,6 +159,7 @@ class _CartState extends State<Cart> {
                     height: 40.0,
                     onPressed: (){
                       //TODO Ecocash method here....
+                      launchUssd("*151*4#");
                     },
                     color: Colors.yellow,
                     shape: RoundedRectangleBorder(
@@ -194,57 +202,7 @@ class _CartState extends State<Cart> {
                   ),
                   Container(
                     height: MediaQuery.of(context).size.height * 0.632,
-                    child: FutureBuilder(
-                      future: DBManagerViews.getList(),
-                      builder: (context, snapshot){
-                        if(snapshot.connectionState == ConnectionState.done){
-                          var cart = snapshot.data;
-                          return ListView.builder(
-                            itemCount: cart == null ? Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                CircularProgressIndicator(),
-                                Padding(
-                                  padding: const EdgeInsets.all(10.0),
-                                  child: Text("It seems you haven't placed anything in your cart"),                              )
-                              ],
-                            )
-                            : cart.length,
-                            itemBuilder: (context, index){
-                              return Card(
-          child: ListTile(
-        leading: ClipRRect(
-          borderRadius: BorderRadius.circular(20.0),
-                child: Container(
-                  height: 50.0,
-                  width: 50.0,
-            child: Image(
-              image: AssetImage(cart[index]['img']),
-              fit: BoxFit.cover,
-            ),
-          ),
-        ),
-        title: Text(cart[index]['title'], style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
-        subtitle: Text("\$" + cart[index]['price']),
-        trailing: ClipRRect(
-                child: Container(
-            child: IconButton(
-              icon: Icon(Icons.close),
-              onPressed: (){
-                setState(() {
-                  cart = 0;
-                });
-              },
-            ),
-          ),
-        ),
-      ),
-    );
-                            },
-                          );
-                        }
-                      }
-                    ),
+                    child: listCart(),
                   )
             ],
           ),
@@ -280,4 +238,125 @@ class _CartState extends State<Cart> {
       ),
     );
   }
+
+  void refreshList(int index){
+    DBManagerViews.deleteOrder(index);
+    Future.delayed(Duration(seconds: 2));
+    listCart();
+  }
+
+  void _delete(BuildContext context, int index) async {
+    // int result = await databaseHelper.deleteTodo(todo.id);
+    int result = await DBManagerViews.deleteOrder(index);
+    if (result != 0) {
+      // _showSnackBar(context, 'Todo Deleted Successfully');
+      // updateListView();
+    }
+  }
+
+  // void updateListView() {
+  //   final Future<Database> dbFuture = DBManagerViews.openDB();
+  //   dbFuture.then((database) {
+  //     Future<List<Todo>> todoListFuture = DBManagerViews.getList();
+  //     todoListFuture.then((todoList) {
+  //       setState(() {
+  //         this.todoList = todoList;
+  //         this.count = todoList.length;
+  //       });
+  //     });
+  //   });
+  // }
+
+  // ListView getTodoListView() {
+  //   final cart = DBManagerViews.getList();
+  //   return ListView.builder(
+  //     itemCount: count,
+  //     itemBuilder: (BuildContext context, int index) {
+  //       return Card(
+  //         color: Colors.white,
+  //         elevation: 2.0,
+  //         child: ListTile(
+  //       leading: ClipRRect(
+  //         borderRadius: BorderRadius.circular(20.0),
+  //               child: Container(
+  //                 height: 50.0,
+  //                 width: 50.0,
+  //           child: Image(
+  //             image: AssetImage(cart[index]['img']),
+  //             fit: BoxFit.cover,
+  //           ),
+  //         ),
+  //       ),
+  //       title: Text(cart[index]['title'], style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
+  //       subtitle: Text("\$" + cart[index]['price']),
+  //       trailing: ClipRRect(
+  //               child: Container(
+  //           child: IconButton(
+  //             icon: Icon(Icons.close),
+  //             onPressed: (){
+  //               refreshList(index);
+  //             },
+  //           ),
+  //         ),
+  //       ),
+  //     ),
+  //       );
+  //     },
+  //   );
+  // }
+
+  Widget listCart() {
+    return FutureBuilder(
+                      future: DBManagerViews.getList(),
+                      builder: (context, snapshot){
+                        if(snapshot.connectionState == ConnectionState.done){
+                          final cart = snapshot.data;
+                          return ListView.builder(
+                            itemCount: cart == null ? Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                CircularProgressIndicator(),
+                                Padding(
+                                  padding: const EdgeInsets.all(10.0),
+                                  child: Text("It seems you haven't placed anything in your cart"),                              )
+                              ],
+                            )
+                            : cart.length,
+                            itemBuilder: (context, index){
+                              return Card(
+          child: ListTile(
+        leading: ClipRRect(
+          borderRadius: BorderRadius.circular(20.0),
+                child: Container(
+                  height: 50.0,
+                  width: 50.0,
+            child: Image(
+              image: AssetImage(cart[index]['img']),
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+        title: Text(cart[index]['title'], style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
+        subtitle: Text("\$" + cart[index]['price']),
+        trailing: ClipRRect(
+                child: Container(
+            child: IconButton(
+              icon: Icon(Icons.close),
+              onPressed: (){
+                refreshList(index);
+              },
+            ),
+          ),
+        ),
+      ),
+    );
+                            },
+                          );
+                        }
+                      }
+                    );
+  }
+
+
+
 }
