@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_supper/model/db_manager.dart';
+import 'package:get_supper/ui/s_cart.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
@@ -66,6 +67,18 @@ class _HomeState extends State<Home>{
 
   int _selectedIndex = 0;
 
+  var shoppingCart = [
+    
+  ];
+
+  void addToCart(String name, String picture, int price){
+    shoppingCart.add({
+      "name": name,
+      "picture": picture,
+      "price": price,
+    });
+
+  }
 
 _buildButton(String title, int index) {
   return GestureDetector(
@@ -110,13 +123,14 @@ _buildButton(String title, int index) {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.white,
-        // title: Text("Get Supper", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold,)),
+        title: Text("Get Supper", style: TextStyle(color: Uidata.primaryColor, fontWeight: FontWeight.bold,)),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.shopping_cart),
             color: Uidata.primaryColor,
             onPressed: (){
-              Navigator.push(context, MaterialPageRoute(builder: (context)=> Cart()));
+              Navigator.push(context, MaterialPageRoute(builder: (context)=> ShoppingCart(shoppingCart)));
+              // Navigator.push(context, MaterialPageRoute(builder: (context)=> Cart()));
             },
           )
         ],
@@ -129,19 +143,19 @@ _buildButton(String title, int index) {
                 padding: const EdgeInsets.only(left: 20.0, right: 20.0),
                 child: Text("What would you like to order?", style: TextStyle(fontSize: 30.0, fontWeight: FontWeight.bold)),
               ),
-              Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: <Widget>[
+              // Padding(
+              //   padding: const EdgeInsets.all(10.0),
+              //   child: Row(
+              //     mainAxisAlignment: MainAxisAlignment.spaceAround,
+              //     children: <Widget>[
 
-                    _buildButton("All", 0),
-                    _buildButton("Rice", 1),
-                    _buildButton("Sadza", 2),
-                    _buildButton("Specials", 3),
-                  ],
-                ),
-              ),
+              //       _buildButton("All", 0),
+              //       _buildButton("Rice", 1),
+              //       _buildButton("Sadza", 2),
+              //       _buildButton("Specials", 3),
+              //     ],
+              //   ),
+              // ),
               Divider(),
               ClipRRect(
                 borderRadius: BorderRadius.only(
@@ -149,9 +163,11 @@ _buildButton(String title, int index) {
                   topRight: Radius.circular(20.0)
                   ),
                               child: Container(
-                  padding: const EdgeInsets.symmetric(vertical: 5.0),
-                  height: MediaQuery.of(context).size.height * 0.65,
-                  child: GridView.builder(
+                  padding: const EdgeInsets.only(bottom: 10.0),
+                  height: MediaQuery.of(context).size.height * 0.8,
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 40.0),
+                    child: GridView.builder(
       itemCount: product_list.length,
       gridDelegate:
           SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
@@ -164,6 +180,7 @@ _buildButton(String title, int index) {
         );
       },
     ),
+                  ),
                 ),
               ),
             ],
@@ -257,11 +274,12 @@ _buildButton(String title, int index) {
                             iconSize: 20,
                             color: Colors.white,
                             onPressed: () {
-                              DBManagerViews.insertOrder({
-                                "title": title,
-                                "price": price.toString(),
-                                "img": img
-                              });
+                              // DBManagerViews.insertOrder({
+                              //   "title": title,
+                              //   "price": price.toString(),
+                              //   "img": img
+                              // });
+                              addToCart(title, img, price);
                               showSnack(title, context);
                             },
                           ),

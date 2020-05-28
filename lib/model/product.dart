@@ -1,47 +1,47 @@
-class ProductModel {
-  String productname;
-  String price;
-  String img;
+// class ProductModel {
+//   String productname;
+//   String price;
+//   String img;
 
-  ProductModel(
-    this.productname,
-    this.price,
-    this.img,
-  );
+//   ProductModel(
+//     this.productname,
+//     this.price,
+//     this.img,
+//   );
 
-  ProductModel.fromMap(dynamic obj) {
-    this.price = obj["price"];
-    this.productname = obj["title"];
-    this.img = obj["img"];
-  }
+//   ProductModel.fromMap(dynamic obj) {
+//     this.price = obj["price"];
+//     this.productname = obj["title"];
+//     this.img = obj["img"];
+//   }
 
-  Map<String, dynamic> toMap() {
-    var map = new Map<String, dynamic>();
+//   Map<String, dynamic> toMap() {
+//     var map = new Map<String, dynamic>();
 
-    map["price"] = productname;
-    map["price"] = price;
-    map["img"] = img;
+//     map["price"] = productname;
+//     map["price"] = price;
+//     map["img"] = img;
 
-    return map;
-  }
+//     return map;
+//   }
 
-  //Getters
-  String get getPrice => price;
-  String get getProductname => productname;
-  String get getImg => img;
-}
+//   //Getters
+//   String get getPrice => price;
+//   String get getProductname => productname;
+//   String get getImg => img;
+// }
 
 
-class Todo {
+class Product {
 
 	int _id;
 	String _title;
 	String _price;
 	String _img;
 
-	Todo(this._title, this._img, [this._price] );
+	Product(this._title, this._img, [this._price] );
 
-	Todo.withId(this._id, this._title, this._img, [this._price]);
+	Product.withId(this._id, this._title, this._img, [this._price]);
 
 	int get id => _id;
 
@@ -82,7 +82,7 @@ class Todo {
 	}
 
 	// Extract a Note object from a Map object
-	Todo.fromMapObject(Map<String, dynamic> map) {
+	Product.fromMapObject(Map<String, dynamic> map) {
 		this._id = map['id'];
 		this._title = map['title'];
 		this._price = map['description'];
