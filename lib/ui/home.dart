@@ -200,7 +200,7 @@ _buildButton(String title, int index) {
                                     Text("$title added to cart"),
                                   ],
                                 ),
-                                // duration: Duration(seconds: 3),
+                                duration: Duration(seconds: 2),
                                 )
                               );
                         }
