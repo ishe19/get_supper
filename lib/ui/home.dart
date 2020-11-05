@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get_supper/model/db_manager.dart';
 import 'package:get_supper/ui/s_cart.dart';
-import 'package:path_provider/path_provider.dart';
+// import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
-import 'package:smooth_star_rating/smooth_star_rating.dart';
+// import 'package:smooth_star_rating/smooth_star_rating.dart';
 import 'package:get_supper/ui/utils/uidata.dart';
 import 'shopping_cart.dart';
 
